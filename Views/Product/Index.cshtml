@@ -1,0 +1,253 @@
+﻿@model TestSkyProduct.Models.ProductModel
+
+<h4>Product List</h4>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    //Select SubCateogyr Item for Update--
+    function SelectPrdouctDeatil(link) {
+
+        var row = link.parentNode.parentNode;
+
+        $("#txtproductname").val(row.cells[2].innerHTML);
+        $("#txtproductnumber").val(row.cells[1].innerHTML);
+        $("#txtdescription").val(row.cells[3].innerHTML);
+        $("#txtunitprice").val(row.cells[4].innerHTML);
+        $("#spanPNumber").text(row.cells[1].innerHTML);
+        $("#spanPNumber").hide();
+       
+
+    }
+    function DeletePrdouct(link) {
+
+        if (confirm('Are you sure want to delete product') != true) {
+
+            return false;
+        }
+        else {
+
+            var row = link.parentNode.parentNode;
+            $("#spanPNumber").text(row.cells[1].innerHTML);
+
+            var obj = {};
+            obj.pnumber = $("#spanPNumber").text();
+            $.ajax({
+                type: "POST",
+                url: "/Product/DeleteProduct",
+                data: JSON.stringify(obj),
+                dataType: "json",
+                contentType: "application/json",
+                success: function (r) {
+
+
+                    alert('Product Deleted Successfully');
+
+                }
+            });
+
+
+        }
+
+
+    }
+   
+    </script>
+
+<script>
+    $(document).ready(function () {
+       
+        $("#btnUpdate").click(function () {
+
+            if (($("#txtproductname").val() == "") || ($("#txtproductnumber").val() == "") || ($("#txtdescription").val() == "") || ($("#txtunitprice").val() == "")) {
+                alert('Please Complete Product Information');
+                return false;
+            }
+            else {
+
+                var obj = {};
+                obj.pname = $("#txtproductname").val();
+                obj.pnumber = $("#txtproductnumber").val();
+                obj.description = $("#txtdescription").val();
+                obj.unitprice = $("#txtunitprice").val();
+                obj.prevpnumber = $("#spanPNumber").text();
+                $.ajax({
+                    type: "POST",
+                    url: "/Product/UpdateProduct",
+                    data: JSON.stringify(obj),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (r) {
+
+
+                        alert('Product Updated Successfully');
+                        $("#txtproductname").val('');
+                        $("#txtproductnumber").val('');
+                        $("#txtdescription").val('');
+                        $("#txtunitprice").val('');
+                    }
+                });
+
+
+            }
+        });
+
+
+
+     //--------------Delete Product-----------------------//
+       
+
+    });
+
+
+</script>
+
+
+
+<div class="card shadow mb-4">
+
+    <div class="card-body">
+      
+        @if (Model != null && Model.ProductList != null && Model.ProductList.Count > 0)
+            {
+            <div class="table table-responsive">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <td>Action</td>
+                            <th>Product Number</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Unit Price</th>
+                         
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var product in Model.ProductList)
+                        {
+                            <tr>
+                                <td>
+                                    <a href='#'  class="btn btn-danger" title='Edit' data-toggle='modal' data-target='#prdouctdiv' onclick='return SelectPrdouctDeatil(this);'>Edit</a>
+                                    <a href='#' class="btn btn-danger" title='Delete' id="btndelete" onclick="return DeletePrdouct(this);">Delete</a>
+                                   
+                                </td>
+                                <td>@Html.DisplayFor(x => product.Prduct_Number)</td>
+
+                               
+
+                                <td>@Html.DisplayFor(x =>product.Product_Name) </td>
+
+                                <td>@Html.DisplayFor(x =>product.Description)</td>
+                                <td>@Html.DisplayFor(x =>product.Unit_Price)</td>
+                               
+
+                          
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <span>No Product Found</span>
+        }
+        <br /><br />
+
+
+
+    </div>
+
+</div>
+
+ <!--------Modal Popup FOr Product Information-->
+<div class="modal fade" id="prdouctdiv" tabindex="-1" role="dialog" aria-labelledby="productcdiv"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div class="card-body">
+
+
+                    <div class="table table-responsive">
+                       <div class="row">
+                                <div class="form-horizontal">
+                                    <h4>Update Product</h4>
+                                    <hr />
+
+                                    <div class="form-group">
+                                        <div class="col-md-4">Product Name</div>
+                                        <div class="col-md-8">
+                                         <input type="text" class="form-control" id="txtproductname" />
+                                            <span id="spanPName"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-4">Product Number</div>
+                                        <div class="col-md-8">
+                                           <input type="text" class="form-control" id="txtproductnumber" />
+                                            <span id="spanPNumber"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-4">Description</div>
+                                        <div class="col-md-8">
+                                            <input type="text" class="form-control" id="txtdescription" />
+                                            <span id="spanDescription"></span>
+                                           </div></div>
+                                  
+
+                           <div class="form-group">
+                               <div class="col-md-4">Unit Price</div>
+                               <div class="col-md-8">
+                                   <input type="text" class="form-control" id="txtunitprice" />
+                                   <span id="spanunitprice"></span>
+                               </div>
+                           </div>
+                                  
+                               
+
+                                    <div class="form-group">
+                                        <div class="col-md-offset-4 col-md-8">
+                                            <input type="submit" id="btnUpdate" value="Update" class="btn btn-primary" onclick="return ValidateForm();" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+
+            </div>
+        </div>
+
+    </div>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

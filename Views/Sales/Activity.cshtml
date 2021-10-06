@@ -1,0 +1,64 @@
+﻿
+@model TestSkyProduct.Models.SalesModel
+
+<h4>Product Sales Actitviy</h4>
+<div class="card shadow mb-4">
+
+    <div class="card-body">
+
+        @if (Model != null && Model.SalesList != null && Model.SalesList.Count > 0)
+            {
+            <div class="table table-responsive">
+                <table width="100%">
+                    <thead>
+                        <tr>
+                            <td>Action</td>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Amount</th>
+                            
+
+
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var product in Model.SalesList)
+                        {
+                            <tr>
+                                <td>
+                                    <a href='#' class="btn btn-danger" title='Edit' >Edit</a>
+
+                                </td>
+                                <td>@Html.DisplayFor(x => product.ProductName)</td>
+
+
+
+                                <td>@Html.DisplayFor(x => product.Quantity) </td>
+
+                                <td>@Html.DisplayFor(x => product.TotalAmount)</td>
+                             
+
+
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <span>No Product Found</span>
+        }
+        <br /><br />
+
+
+
+    </div>
+
+</div>
